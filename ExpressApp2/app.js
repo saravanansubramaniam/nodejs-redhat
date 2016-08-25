@@ -11,7 +11,8 @@ var sql = require('mssql');
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 3000);
+app.set('ip', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
@@ -28,29 +29,19 @@ if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-app.get('/about', routes.about);
-app.get('/contact', routes.contact);
 
-http.createServer(app).listen(app.get('port'), function () {
+
+//http.createServer(app).listen(app.get('port'), function () {
+//    console.log('Express server listening on port ' + app.get('port'));   
+//});
+
+
+http.createServer(app).listen(app.get('port'), app.get('ip'), function () {
     console.log('Express server listening on port ' + app.get('port'));
-
-    //sql.connect("mssql://test:test@IYC2WCDT2/test").then(function () {
-    //    // Query 
-
-    //    new sql.Request().query('select name,age from Customer(NOLOCK)').then(function (recordset) {
-    //        console.dir(recordset);
-    //        console.log(recordset);
-    //    }).catch(function (err) {
-    //        // ... query error checks 
-    //    });
-     
-    //}).catch(function (err) {
-    //    // ... connect error checks 
-    //    console.log(err);
-    //});
 });
 
 
 
-
+app.get('/', routes.index);
+app.get('/about', routes.about);
+app.get('/contact', routes.contact);
